@@ -9,7 +9,7 @@ module.exports = (bot, msg, match) => {
   const { startDate, endDate } = getStartEndDate(command, args)
 
   if (!startDate || !endDate) {
-    bot.sendMessage(chatId, 'Báo cáo cho anh như thế nào đây ạ?: today, week, month, range YYYY-MM-DD YYYY-MM-DD')
+    bot.sendMessage(chatId, 'Anh thêm 1 trong mấy option này sau chữ report dùm em: today, week, month, range YYYY-MM-DD YYYY-MM-DD')
     return
   }
 
