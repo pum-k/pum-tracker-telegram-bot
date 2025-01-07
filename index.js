@@ -1,6 +1,7 @@
 require('dotenv').config()
 const TelegramBot = require('node-telegram-bot-api')
-const { connectDB } = require('./config/database')
+const {connectDB} = require('./config/database')
+const {getState} = require('./utils/stateManager')
 
 // Import các command
 const helpCommand = require('./commands/help')
@@ -10,7 +11,7 @@ const startCommand = require('./commands/start')
 const removeCommand = require('./commands/remove')
 
 const BOT_TOKEN = process.env.BOT_TOKEN
-const bot = new TelegramBot(BOT_TOKEN, { polling: true })
+const bot = new TelegramBot(BOT_TOKEN, {polling: true})
 
 connectDB()
 
@@ -19,3 +20,13 @@ bot.onText(/\/cancel/, (msg) => cancelCommand(bot, msg))
 bot.onText(/\/report (.+)/, (msg, match) => reportCommand(bot, msg, match))
 bot.onText(/\/remove/, (msg) => removeCommand(bot, msg))
 bot.on('message', (msg) => startCommand(bot, msg))
+
+bot.on('polling_error', (error) => {
+  console.log(`[polling_error] ${error.code}: ${error.message}`);
+});
+
+bot.onText(/\/reset/, () => {
+  for (const chatId in getState()) {
+    clearState(chatId)
+  }
+})

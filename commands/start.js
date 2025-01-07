@@ -5,20 +5,18 @@ module.exports = (bot, msg) => {
   const chatId = msg.chat.id
   const text = msg.text
 
-  // Bỏ qua nếu tin nhắn là lệnh
-  if (text.startsWith('/')) return
+  if (text.startsWith('/')) {
+    return
+  }
 
-  // Kiểm tra trạng thái hiện tại
   let state = getState(chatId)
 
-  // Nếu chưa có trạng thái, coi tin nhắn là tên món ăn và hỏi giá
   if (!state) {
-    setState(chatId, { step: 'askAmount', item: text }) // Lưu tên món và chuyển sang bước hỏi giá
+    setState(chatId, { step: 'askAmount', item: text })
     bot.sendMessage(chatId, `Anh mới mua "${text}" hả?. Hết bao nhiêu tiền dị?`)
     return
   }
 
-  // Nếu đang ở bước hỏi số tiền
   if (state.step === 'askAmount') {
     const amount = parseFloat(text)
     if (isNaN(amount)) {
@@ -36,7 +34,7 @@ module.exports = (bot, msg) => {
       .save()
       .then(() => {
         bot.sendMessage(chatId, `Got it, anh yêu mua ${state.item} hết ${amount} đồng. Đã he!`)
-        clearState(chatId) // Xóa trạng thái sau khi hoàn tất
+        clearState(chatId)
       })
       .catch((error) => {
         bot.sendMessage(chatId, 'Có lỗi xảy ra khi lưu dữ liệu.')
