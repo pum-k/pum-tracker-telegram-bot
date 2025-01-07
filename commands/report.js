@@ -3,15 +3,15 @@ const { getStartEndDate } = require('../utils/dateHelper')
 
 module.exports = (bot, msg, match) => {
   const chatId = msg.chat.id
-  const args = match[1].split(' ')
-  const command = args[0]
+  const args = match?.[1]?.split(' ')
+  const command = args?.[0]
 
-  const { startDate, endDate } = getStartEndDate(command, args)
-
-  if (!startDate || !endDate) {
+  if (!args) {
     bot.sendMessage(chatId, 'Anh thêm 1 trong mấy option này sau chữ report dùm em: today, week, month, range YYYY-MM-DD YYYY-MM-DD')
     return
   }
+
+  const { startDate, endDate } = getStartEndDate(command, args)
 
   Expense.find({
     userId: chatId,
@@ -19,7 +19,7 @@ module.exports = (bot, msg, match) => {
   })
     .then((expenses) => {
       if (expenses.length === 0) {
-        bot.sendMessage(chatId, 'Anh có mua gì vào lúc đó đâu?!.')
+        bot.sendMessage(chatId, 'Anh có mua gì đâu?!.')
         return
       }
 
